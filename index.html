@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprout — Evaluation Tasks</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    min-height: 100vh;
+    color: white;
+    padding: 40px 20px;
+  }
+  .container {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .header h1 {
+    font-size: 48px;
+    font-weight: 900;
+    color: #F4C430;
+    margin-bottom: 8px;
+  }
+  .header p {
+    font-size: 18px;
+    color: rgba(255,255,255,0.7);
+  }
+  .card {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 16px;
+    text-decoration: none;
+    color: white;
+    display: block;
+    transition: transform 0.2s, background 0.2s;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    background: rgba(255,255,255,0.14);
+  }
+  .card-top {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 10px;
+  }
+  .card-num {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 900;
+    flex-shrink: 0;
+  }
+  .card:nth-child(1) .card-num { background: #F4C430; color: #1a1a2e; }
+  .card:nth-child(2) .card-num { background: #4ECDC4; color: #1a1a2e; }
+  .card:nth-child(3) .card-num { background: #FF6B6B; color: white; }
+  .card:nth-child(4) .card-num { background: #A78BFA; color: white; }
+  .card-title {
+    font-size: 20px;
+    font-weight: 800;
+  }
+  .card-pts {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    font-weight: 600;
+  }
+  .card-desc {
+    color: rgba(255,255,255,0.65);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .card-tag {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    background: rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.8);
+  }
+  .footer {
+    text-align: center;
+    margin-top: 30px;
+    color: rgba(255,255,255,0.4);
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>Sprout</h1>
+    <p>Evaluation Tasks — Sneha Pratap</p>
+  </div>
+
+  <a class="card" href="task1-engagement-loop/">
+    <div class="card-top">
+      <div class="card-num">01</div>
+      <div>
+        <div class="card-title">5-Minute Engagement Loop</div>
+        <div class="card-pts">25 points</div>
+      </div>
+    </div>
+    <div class="card-desc">"Animal Drawing Adventure with Brushy" — a guided drawing activity for 3-year-olds with step-by-step prompts, sensory feedback, and a surprise finale.</div>
+    <span class="card-tag">Design Document</span>
+  </a>
+
+  <a class="card" href="task2-interactive-screen/">
+    <div class="card-top">
+      <div class="card-num">02</div>
+      <div>
+        <div class="card-title">Mini Interactive Screen</div>
+        <div class="card-pts">25 points</div>
+      </div>
+    </div>
+    <div class="card-desc">"Bubble Pop Farm" — tap floating bubbles to discover hidden farm animals with animations and synthesized sounds. Try it live!</div>
+    <span class="card-tag">Interactive Demo</span>
+  </a>
+
+  <a class="card" href="task3-dropoff-diagnosis/">
+    <div class="card-top">
+      <div class="card-num">03</div>
+      <div>
+        <div class="card-title">Drop-Off Diagnosis</div>
+        <div class="card-pts">20 points</div>
+      </div>
+    </div>
+    <div class="card-desc">Structured analysis: "Kids leave after 2 minutes" — investigation steps, hypotheses, and measurable success criteria in under 200 words.</div>
+    <span class="card-tag">Written Analysis</span>
+  </a>
+
+  <a class="card" href="task4-camera-app/web/">
+    <div class="card-top">
+      <div class="card-num">04</div>
+      <div>
+        <div class="card-title">Camera Learning App</div>
+        <div class="card-pts">30 points</div>
+      </div>
+    </div>
+    <div class="card-desc">"Nature Explorer — Find 5 Things!" — React Native Expo app with camera integration, image recognition, and a scavenger hunt for kids.</div>
+    <span class="card-tag">Live Web Preview</span>
+  </a>
+
+  <div class="footer">
+    Built with React Native (Expo) &amp; vanilla HTML/CSS/JS
+  </div>
+</div>
+</body>
+</html>

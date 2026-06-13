@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task 1: 5-Minute Engagement Loop — Sprout</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #F8F9FA;
+    color: #2E4057;
+    line-height: 1.7;
+    padding: 20px;
+  }
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+  }
+  .badge {
+    display: inline-block;
+    background: #E8F5E9;
+    color: #2E7D32;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  h1 {
+    font-size: 32px;
+    font-weight: 900;
+    margin-bottom: 4px;
+    color: #1a1a2e;
+  }
+  .subtitle {
+    font-size: 18px;
+    color: #888;
+    margin-bottom: 24px;
+  }
+  .meta {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+  }
+  .meta-item {
+    background: #F0F4FF;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .meta-item span { color: #666; font-weight: 400; }
+  hr {
+    border: none;
+    border-top: 2px solid #F0F0F0;
+    margin: 30px 0;
+  }
+  h2 {
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 14px;
+    color: #1a1a2e;
+  }
+  h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin: 20px 0 8px;
+    color: #4A5568;
+  }
+  p { margin-bottom: 14px; }
+  ol, ul {
+    margin-bottom: 14px;
+    padding-left: 24px;
+  }
+  li { margin-bottom: 8px; }
+  strong { color: #1a1a2e; }
+  em { color: #6B7280; }
+
+  .timeline {
+    border-left: 3px solid #667EEA;
+    margin: 20px 0;
+    padding-left: 0;
+    list-style: none;
+  }
+  .timeline li {
+    padding: 12px 20px;
+    position: relative;
+    margin-bottom: 0;
+    border-bottom: 1px solid #F0F0F0;
+  }
+  .timeline li:last-child { border-bottom: none; }
+  .timeline li::before {
+    content: '';
+    width: 12px;
+    height: 12px;
+    background: #667EEA;
+    border-radius: 50%;
+    position: absolute;
+    left: -7.5px;
+    top: 18px;
+  }
+  .time-label {
+    font-weight: 800;
+    color: #667EEA;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .phase-label {
+    font-weight: 700;
+    color: #1a1a2e;
+  }
+
+  .sketch {
+    background: #1a1a2e;
+    color: #98FB98;
+    padding: 20px;
+    border-radius: 12px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 1.4;
+    overflow-x: auto;
+    white-space: pre;
+    margin: 20px 0;
+  }
+
+  .principle {
+    background: #FFFBEB;
+    border-left: 4px solid #F59E0B;
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 10px;
+  }
+  .principle strong { color: #92400E; }
+
+  .summary-list {
+    list-style: none;
+    padding: 0;
+    counter-reset: summary;
+  }
+  .summary-list li {
+    counter-increment: summary;
+    padding: 10px 16px 10px 50px;
+    position: relative;
+    background: #F8F9FA;
+    border-radius: 10px;
+    margin-bottom: 8px;
+  }
+  .summary-list li::before {
+    content: counter(summary);
+    position: absolute;
+    left: 14px;
+    top: 10px;
+    width: 26px;
+    height: 26px;
+    background: #667EEA;
+    color: white;
+    border-radius: 50%;
+    font-weight: 800;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="badge">Task 1 — 25 pts</div>
+  <h1>Animal Drawing Adventure with Brushy</h1>
+  <p class="subtitle">A 5-minute engagement loop for children ages 3–5</p>
+
+  <div class="meta">
+    <div class="meta-item">Activity: <span>Guided Drawing</span></div>
+    <div class="meta-item">Target Age: <span>3 years old</span></div>
+    <div class="meta-item">Duration: <span>5 minutes</span></div>
+  </div>
+
+  <hr>
+
+  <h2>What Is the Activity?</h2>
+  <p>A friendly animated paintbrush character named <strong>Brushy</strong> guides the child through drawing an animal, one body part at a time. The child draws freely on a full-screen canvas using their finger while Brushy provides step-by-step voice prompts, encouragement, and silly commentary.</p>
+
+  <p>The loop follows a structured 5-step sequence:</p>
+  <ol>
+    <li><strong>Choose your animal</strong> — the child taps one of three large, bouncy animal cards (cat, dog, or fish)</li>
+    <li><strong>Draw the body</strong> — a faint outline appears as a gentle guide; the child traces or scribbles freely</li>
+    <li><strong>Draw the head</strong> — celebration burst, then next guide appears</li>
+    <li><strong>Add eyes and nose</strong> — Brushy makes funny faces to demonstrate</li>
+    <li><strong>Add details + color</strong> — tail/fins/whiskers, then a color palette appears for tapping to fill</li>
+  </ol>
+  <p>At the end, the drawing <strong>"comes alive"</strong> — it wiggles, blinks, and makes an animal sound.</p>
+
+  <h3>Core Design Principles</h3>
+  <div class="principle"><strong>No failure state.</strong> Every mark the child makes is celebrated. Brushy never corrects; only praises.</div>
+  <div class="principle"><strong>Constant sensory feedback.</strong> Each finger stroke produces colorful trails with sparkle particles and a soft sound.</div>
+  <div class="principle"><strong>Surprise reward.</strong> The animated finale is unexpected and delightful — the child's own creation moves and speaks.</div>
+  <div class="principle"><strong>Scaffolded autonomy.</strong> Guides are optional visual hints, not rigid templates. The child feels ownership over their drawing.</div>
+
+  <hr>
+
+  <h2>Why a 3-Year-Old Would Enjoy It</h2>
+
+  <h3>Developmentally Aligned</h3>
+  <p>Three-year-olds are in the <strong>"controlled scribbling"</strong> stage of drawing development. They are beginning to make intentional marks but cannot yet draw recognizable shapes. This activity meets them exactly where they are — any mark counts as a successful drawing step.</p>
+
+  <h3>Multi-Sensory Engagement</h3>
+  <p>Every touch produces an immediate visual response (colorful trails with sparkle particles), an auditory response (soft chime or swoosh), and a cause-and-effect loop that is intrinsically satisfying at this age. The 1-second feedback cycle keeps attention anchored.</p>
+
+  <h3>Parasocial Bond with Brushy</h3>
+  <p>Three-year-olds readily form attachments to animated characters. Brushy speaks in a warm, silly voice (<em>"Ooooh, those are the BEST ears I've ever seen!"</em>), reacts to the child's drawing progress, and has simple expressions (happy, surprised, sleepy). This relationship makes the child want to continue — they are drawing <em>for</em> Brushy.</p>
+
+  <h3>Surprise and Delight</h3>
+  <ul>
+    <li>It is <strong>unexpected</strong> the first time (novelty drives dopamine)</li>
+    <li>It is <strong>personal</strong> (their own drawing came alive)</li>
+    <li>It is <strong>repeatable</strong> with variation (different animal = different sound and movement)</li>
+  </ul>
+
+  <h3>No Frustration Triggers</h3>
+  <ul>
+    <li>Steps auto-advance after 60 seconds regardless of what the child drew</li>
+    <li>There is no "wrong" drawing — a scribble for "body" works just as well as a circle</li>
+    <li>The interface has no small buttons, no text to read, and no complex gestures</li>
+  </ul>
+
+  <hr>
+
+  <h2>The 5-Minute Loop (Minute by Minute)</h2>
+
+  <ul class="timeline">
+    <li>
+      <span class="time-label">0:00 – 0:30</span>
+      <span class="phase-label">Animal Selection</span>
+      <p>Brushy bounces onto the screen: "Hi! Let's draw together!" Three large animal cards (cat, dog, fish) wobble invitingly. Child taps one. Selected card zooms in with a pop sound, others slide away. Canvas appears.</p>
+    </li>
+    <li>
+      <span class="time-label">0:30 – 1:30</span>
+      <span class="phase-label">Step 1: Body</span>
+      <p>Brushy says "Let's start with the body!" A faint circle/oval outline glows briefly as a hint, then fades to 20% opacity. Child draws freely — every stroke leaves colorful, sparkly trails. Background music plays softly.</p>
+    </li>
+    <li>
+      <span class="time-label">1:30 – 2:30</span>
+      <span class="phase-label">Step 2: Head</span>
+      <p>Star burst celebration for completing Step 1 (regardless of what was drawn). Brushy cheers. New faint guide appears above the body area. Child draws the head.</p>
+    </li>
+    <li>
+      <span class="time-label">2:30 – 3:30</span>
+      <span class="phase-label">Step 3: Eyes &amp; Nose</span>
+      <p>Another celebration. Brushy makes funny faces: "Eyes go HERE!" (points to its own face). Googly eye stickers float nearby — child can tap to stamp them or draw their own.</p>
+    </li>
+    <li>
+      <span class="time-label">3:30 – 4:15</span>
+      <span class="phase-label">Step 4: Details</span>
+      <p>"Don't forget the [tail / fins / whiskers]!" Brushy demonstrates by swishing its bristles. Child adds final details.</p>
+    </li>
+    <li>
+      <span class="time-label">4:15 – 4:45</span>
+      <span class="phase-label">Step 5: Color</span>
+      <p>"Let's make it COLORFUL!" A row of 6 large color dots appears at the bottom. Child taps a color, then taps regions of their drawing to fill. Each fill triggers a satisfying splash sound.</p>
+    </li>
+    <li>
+      <span class="time-label">4:45 – 5:00</span>
+      <span class="phase-label">Finale</span>
+      <p>Grand celebration: the drawing wobbles, blinks, and plays an animal sound (meow / woof / blub). Stars burst across the screen. Brushy says "You're an AMAZING artist!" Drawing gets a golden frame.</p>
+    </li>
+  </ul>
+
+  <hr>
+
+  <h2>What Happens When Time Runs Out</h2>
+
+  <h3>Natural Completion (4:45–5:00)</h3>
+  <ul>
+    <li>At 4:45, the finale sequence begins <strong>automatically</strong>, regardless of where the child is in the coloring step</li>
+    <li>The drawing animates with a wiggle, blink, and animal sound</li>
+    <li>Stars and confetti fill the screen</li>
+    <li>Brushy delivers the closing line: <em>"Your [cat/dog/fish] wants to say THANK YOU!"</em></li>
+  </ul>
+
+  <h3>Gentle Wind-Down (5:00–5:15)</h3>
+  <ul>
+    <li>The drawing is displayed with a golden frame — the child sees their completed artwork</li>
+    <li>A large "Show to Mommy/Daddy" button appears (takes a screenshot for the camera roll)</li>
+    <li>Brushy yawns and stretches: <em>"Brushy is getting sleepy... see you next time!"</em></li>
+    <li>Brushy waves slowly, smiles, and gently fades out</li>
+    <li>Screen transitions to a soft, calm "All done!" screen with a waving hand</li>
+  </ul>
+
+  <h3>If a Parent Session Limit Is Active</h3>
+  <ul>
+    <li>A soft, parent-themed lock screen fades in (not jarring — uses the same pastel palette)</li>
+    <li>Message for parents: "Great session! [Child's name] drew a [cat]. Drawing saved to gallery."</li>
+    <li>No child-facing "STOP" or "TIME'S UP" message — the loop simply concludes at its natural endpoint</li>
+  </ul>
+
+  <h3>Key Design Decision: No Cliffhangers</h3>
+  <p>The loop is intentionally <strong>self-contained</strong>. The child is never interrupted mid-stroke or mid-step. Each step has a fixed time window that is generous enough for free exploration but bounded enough to keep the loop on track. If a child finishes a step early, the celebration plays immediately and the next step begins — the loop can run faster than 5 minutes but never longer.</p>
+
+  <hr>
+
+  <h2>UI Sketch</h2>
+  <div class="sketch">Screen 1: ANIMAL SELECTION                Screen 2: DRAWING CANVAS
++--------------------------------+        +--------------------------------+
+|                                |        |  [*] [*] [*] [ ] [ ]  Step 3  |
+|   "Let's draw together!"      |        |                                |
+|        ~ Brushy ~              |        |   +------------------------+   |
+|                                |        |   |                        |   |
+|   +--------+  +--------+      |        |   |     ~ CANVAS ~         |   |
+|   |  CAT   |  |  DOG   |      |        |   |                        |   |
+|   | (=^.^=)|  | (U^ェ^U)|      |        |   |    child draws here    |   |
+|   +--------+  +--------+      |        |   |                        |   |
+|        +--------+              |        |   |                        |   |
+|        |  FISH  |              |        |   +------------------------+   |
+|        | ><(((o>|              |        |                                |
+|        +--------+              |        |   Brushy: "Add the eyes!"      |
+|                                |        |   [Brushy avatar animating]    |
++--------------------------------+        +--------------------------------+
+
+Screen 3: COLORING PHASE                  Screen 4: FINALE / REWARD
++--------------------------------+        +--------------------------------+
+|  [*] [*] [*] [*] [*]  Step 5  |        |     * * *  AMAZING!  * * *     |
+|                                |        |                                |
+|   +------------------------+   |        |   +------------------------+   |
+|   |                        |   |        |   |                        |   |
+|   |   child's drawing      |   |        |   |   child's drawing      |   |
+|   |   (regions fillable)   |   |        |   |   ~~ wiggling ~~       |   |
+|   |                        |   |        |   |   ** blinking **       |   |
+|   |                        |   |        |   |                        |   |
+|   +------------------------+   |        |   +----[golden frame]------+   |
+|                                |        |                                |
+|  Colors:                       |        |   "Your cat says THANK YOU!"   |
+|  (R) (O) (Y) (G) (B) (P)      |        |                                |
+|                                |        |  [Show to Mommy/Daddy]         |
+|  Brushy: "Make it colorful!"  |        |                                |
++--------------------------------+        |  Brushy: "See you next time!"  |
+                                          +--------------------------------+</div>
+
+  <hr>
+
+  <h2>Summary</h2>
+  <ul class="summary-list">
+    <li><strong>Respects the child's developmental stage</strong> — scribbling is celebrated, not corrected</li>
+    <li><strong>Provides constant sensory rewards</strong> — visual sparkles, sounds, and character reactions every few seconds</li>
+    <li><strong>Creates a narrative arc</strong> — beginning (choose), middle (draw), and satisfying end (drawing comes alive)</li>
+    <li><strong>Ends gracefully</strong> — no abrupt cutoff, no frustration, and a shareable keepsake for the parent</li>
+    <li><strong>Encourages replay</strong> — three animals provide variety, and each drawing is unique</li>
+  </ul>
+</div>
+</body>
+</html>
