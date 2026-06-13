@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Bubble Pop Farm - Sprout</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    overflow: hidden;
+    font-family: 'Segoe UI', 'Arial Rounded MT Bold', sans-serif;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .scene {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    background: linear-gradient(180deg, #87CEEB 0%, #B0E0FF 40%, #90EE90 60%, #228B22 100%);
+  }
+
+  /* Sun */
+  .sun {
+    position: absolute;
+    top: 30px;
+    right: 40px;
+    width: 80px;
+    height: 80px;
+    background: #FFD700;
+    border-radius: 50%;
+    box-shadow: 0 0 40px #FFD700, 0 0 80px rgba(255,215,0,0.3);
+    animation: pulse 3s ease-in-out infinite;
+  }
+
+  /* Clouds */
+  .cloud {
+    position: absolute;
+    background: white;
+    border-radius: 50px;
+    opacity: 0.8;
+  }
+  .cloud::before, .cloud::after {
+    content: '';
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+  }
+  .cloud1 { top: 50px; left: 10%; width: 100px; height: 40px; animation: drift 20s linear infinite; }
+  .cloud1::before { width: 50px; height: 50px; top: -25px; left: 15px; }
+  .cloud1::after { width: 40px; height: 40px; top: -15px; left: 50px; }
+  .cloud2 { top: 90px; left: 50%; width: 80px; height: 30px; animation: drift 25s linear infinite reverse; }
+  .cloud2::before { width: 40px; height: 40px; top: -20px; left: 10px; }
+  .cloud2::after { width: 35px; height: 35px; top: -12px; left: 40px; }
+
+  /* Title */
+  .title {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 28px;
+    font-weight: 900;
+    color: #2E4057;
+    text-shadow: 2px 2px 0 rgba(255,255,255,0.5);
+    z-index: 10;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  /* Progress */
+  .progress {
+    position: absolute;
+    top: 55px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+  }
+  .paw {
+    font-size: 24px;
+    opacity: 0.3;
+    transition: all 0.4s ease;
+    filter: grayscale(1);
+  }
+  .paw.found {
+    opacity: 1;
+    filter: grayscale(0);
+    animation: paw-pop 0.5s ease;
+  }
+
+  /* Fence */
+  .fence {
+    position: absolute;
+    bottom: 28%;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    z-index: 1;
+  }
+  .fence-post {
+    position: absolute;
+    bottom: 0;
+    width: 12px;
+    height: 50px;
+    background: #DEB887;
+    border-radius: 3px 3px 0 0;
+    box-shadow: inset -2px 0 0 rgba(0,0,0,0.1);
+  }
+  .fence-rail {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    background: #DEB887;
+    border-radius: 4px;
+    box-shadow: inset 0 -2px 0 rgba(0,0,0,0.1);
+  }
+  .fence-rail:nth-child(1) { bottom: 35px; }
+  .fence-rail:nth-child(2) { bottom: 15px; }
+
+  /* Bubbles */
+  .bubble {
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    transition: transform 0.1s ease;
+  }
+  .bubble:active {
+    transform: scale(0.9);
+  }
+  .bubble-outer {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(255,255,255,0.1));
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1), inset 0 -3px 8px rgba(0,0,0,0.05);
+  }
+  .bubble-inner {
+    width: 80%;
+    height: 80%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: white;
+    font-weight: 800;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+  }
+  .bubble .emoji {
+    display: none;
+    font-size: 50px;
+    position: absolute;
+    z-index: 6;
+  }
+
+  /* Bubble colors */
+  .bubble[data-animal="cow"] .bubble-inner { background: #FF9AA2; }
+  .bubble[data-animal="cow"] .bubble-outer { border: 3px solid rgba(255,154,162,0.5); }
+  .bubble[data-animal="duck"] .bubble-inner { background: #FFD700; }
+  .bubble[data-animal="duck"] .bubble-outer { border: 3px solid rgba(255,215,0,0.5); }
+  .bubble[data-animal="sheep"] .bubble-inner { background: #B5B9FF; }
+  .bubble[data-animal="sheep"] .bubble-outer { border: 3px solid rgba(181,185,255,0.5); }
+  .bubble[data-animal="pig"] .bubble-inner { background: #FFB7CE; }
+  .bubble[data-animal="pig"] .bubble-outer { border: 3px solid rgba(255,183,206,0.5); }
+  .bubble[data-animal="chicken"] .bubble-inner { background: #FFDAB9; }
+  .bubble[data-animal="chicken"] .bubble-outer { border: 3px solid rgba(255,218,185,0.5); }
+  .bubble[data-animal="dog"] .bubble-inner { background: #98D8C8; }
+  .bubble[data-animal="dog"] .bubble-outer { border: 3px solid rgba(152,216,200,0.5); }
+
+  /* Floating animation - each bubble gets a unique one via JS */
+  .bubble.floating {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* Popping states */
+  .bubble.popping .bubble-outer {
+    animation: pop-burst 0.4s ease forwards;
+  }
+  .bubble.popped .bubble-outer {
+    display: none;
+  }
+  .bubble.popped .emoji {
+    display: block;
+    animation: emoji-bounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+  .bubble.popped {
+    pointer-events: none;
+  }
+
+  /* Animal label */
+  .animal-label {
+    position: absolute;
+    bottom: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 16px;
+    font-weight: 800;
+    color: #2E4057;
+    white-space: nowrap;
+    opacity: 0;
+    text-shadow: 1px 1px 0 white;
+  }
+  .bubble.popped .animal-label {
+    animation: label-fade 0.5s ease 0.3s forwards;
+  }
+
+  /* Celebration overlay */
+  .celebration {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.9);
+  }
+  .celebration.active {
+    display: flex;
+    animation: fade-in 0.5s ease;
+  }
+  .celebration h1 {
+    font-size: 32px;
+    color: #2E4057;
+    margin-bottom: 10px;
+    animation: title-bounce 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .celebration p {
+    font-size: 20px;
+    color: #666;
+    margin-bottom: 30px;
+  }
+  .celebration .animals-row {
+    font-size: 48px;
+    letter-spacing: 15px;
+    margin-bottom: 30px;
+    animation: animals-wave 1s ease 0.5s both;
+  }
+  .play-again {
+    padding: 16px 40px;
+    font-size: 22px;
+    font-weight: 800;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(76,175,80,0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .play-again:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(76,175,80,0.5);
+  }
+  .play-again:active {
+    transform: scale(0.95);
+  }
+
+  /* Confetti */
+  .confetti-piece {
+    position: fixed;
+    width: 12px;
+    height: 12px;
+    z-index: 101;
+    border-radius: 2px;
+    animation: confetti-fall linear forwards;
+  }
+
+  /* Sparkle on pop */
+  .sparkle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: sparkle-out 0.6s ease forwards;
+  }
+
+  /* Keyframes */
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 40px #FFD700, 0 0 80px rgba(255,215,0,0.3); }
+    50% { box-shadow: 0 0 50px #FFD700, 0 0 100px rgba(255,215,0,0.4); }
+  }
+
+  @keyframes drift {
+    from { transform: translateX(-150px); }
+    to { transform: translateX(calc(100vw + 150px)); }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    33% { transform: translateY(-12px) rotate(2deg); }
+    66% { transform: translateY(6px) rotate(-2deg); }
+  }
+
+  @keyframes pop-burst {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.5; }
+    100% { transform: scale(0); opacity: 0; }
+  }
+
+  @keyframes emoji-bounce {
+    0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+    60% { transform: scale(1.3) rotate(5deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  @keyframes label-fade {
+    from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+
+  @keyframes paw-pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.5); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes title-bounce {
+    0% { transform: scale(0); }
+    60% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes animals-wave {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes confetti-fall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+
+  @keyframes sparkle-out {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(0); opacity: 0; }
+  }
+
+  /* Responsive */
+  @media (max-width: 500px) {
+    .title { font-size: 22px; }
+    .bubble { width: 75px; height: 75px; }
+    .bubble .emoji { font-size: 40px; }
+    .sun { width: 60px; height: 60px; top: 20px; right: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scene" id="scene">
+  <!-- Sun -->
+  <div class="sun"></div>
+
+  <!-- Clouds -->
+  <div class="cloud cloud1"></div>
+  <div class="cloud cloud2"></div>
+
+  <!-- Title -->
+  <div class="title">Bubble Pop Farm!</div>
+
+  <!-- Progress -->
+  <div class="progress" id="progress">
+    <span class="paw" data-index="0">🐾</span>
+    <span class="paw" data-index="1">🐾</span>
+    <span class="paw" data-index="2">🐾</span>
+    <span class="paw" data-index="3">🐾</span>
+    <span class="paw" data-index="4">🐾</span>
+    <span class="paw" data-index="5">🐾</span>
+  </div>
+
+  <!-- Fence -->
+  <div class="fence" id="fence">
+    <div class="fence-rail"></div>
+    <div class="fence-rail"></div>
+  </div>
+
+  <!-- Bubbles will be created by JS -->
+
+  <!-- Celebration -->
+  <div class="celebration" id="celebration">
+    <h1>You Found Them All!</h1>
+    <p>Great job, little farmer!</p>
+    <div class="animals-row">🐄 🦆 🐑 🐷 🐔 🐶</div>
+    <button class="play-again" id="playAgain">Play Again!</button>
+  </div>
+</div>
+
+<script>
+  // Audio context (created on first interaction)
+  let audioCtx = null;
+
+  function getAudioCtx() {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    return audioCtx;
+  }
+
+  // Sound synthesis
+  function playSound(type) {
+    const ctx = getAudioCtx();
+    const now = ctx.currentTime;
+    const gain = ctx.createGain();
+    gain.connect(ctx.destination);
+
+    switch(type) {
+      case 'cow': {
+        // Low moo
+        const osc = ctx.createOscillator();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.linearRampToValueAtTime(100, now + 0.6);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.linearRampToValueAtTime(0, now + 0.7);
+        osc.connect(gain);
+        osc.start(now);
+        osc.stop(now + 0.7);
+        break;
+      }
+      case 'duck': {
+        // Quack quack
+        for (let i = 0; i < 2; i++) {
+          const osc = ctx.createOscillator();
+          const g = ctx.createGain();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(600, now + i * 0.2);
+          osc.frequency.linearRampToValueAtTime(400, now + i * 0.2 + 0.1);
+          g.gain.setValueAtTime(0.1, now + i * 0.2);
+          g.gain.linearRampToValueAtTime(0, now + i * 0.2 + 0.15);
+          osc.connect(g);
+          g.connect(ctx.destination);
+          osc.start(now + i * 0.2);
+          osc.stop(now + i * 0.2 + 0.15);
+        }
+        break;
+      }
+      case 'sheep': {
+        // Baa with vibrato
+        const osc = ctx.createOscillator();
+        const lfo = ctx.createOscillator();
+        const lfoGain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(300, now);
+        lfo.frequency.setValueAtTime(8, now);
+        lfoGain.gain.setValueAtTime(30, now);
+        lfo.connect(lfoGain);
+        lfoGain.connect(osc.frequency);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.linearRampToValueAtTime(0, now + 0.6);
+        osc.connect(gain);
+        osc.start(now);
+        lfo.start(now);
+        osc.stop(now + 0.6);
+        lfo.stop(now + 0.6);
+        break;
+      }
+      case 'pig': {
+        // Oink - nasal frequency modulation
+        const osc = ctx.createOscillator();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(400, now);
+        osc.frequency.linearRampToValueAtTime(300, now + 0.1);
+        osc.frequency.linearRampToValueAtTime(450, now + 0.2);
+        osc.frequency.linearRampToValueAtTime(300, now + 0.3);
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.linearRampToValueAtTime(0, now + 0.35);
+        osc.connect(gain);
+        osc.start(now);
+        osc.stop(now + 0.35);
+        break;
+      }
+      case 'chicken': {
+        // Cluck cluck
+        for (let i = 0; i < 3; i++) {
+          const osc = ctx.createOscillator();
+          const g = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(800, now + i * 0.12);
+          osc.frequency.linearRampToValueAtTime(500, now + i * 0.12 + 0.08);
+          g.gain.setValueAtTime(0.1, now + i * 0.12);
+          g.gain.linearRampToValueAtTime(0, now + i * 0.12 + 0.1);
+          osc.connect(g);
+          g.connect(ctx.destination);
+          osc.start(now + i * 0.12);
+          osc.stop(now + i * 0.12 + 0.1);
+        }
+        break;
+      }
+      case 'dog': {
+        // Woof - two tone bark
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        const g1 = ctx.createGain();
+        const g2 = ctx.createGain();
+        osc1.type = 'triangle';
+        osc1.frequency.setValueAtTime(200, now);
+        g1.gain.setValueAtTime(0.15, now);
+        g1.gain.linearRampToValueAtTime(0, now + 0.15);
+        osc1.connect(g1);
+        g1.connect(ctx.destination);
+        osc2.type = 'triangle';
+        osc2.frequency.setValueAtTime(150, now + 0.18);
+        g2.gain.setValueAtTime(0, now);
+        g2.gain.setValueAtTime(0.15, now + 0.18);
+        g2.gain.linearRampToValueAtTime(0, now + 0.35);
+        osc2.connect(g2);
+        g2.connect(ctx.destination);
+        osc1.start(now);
+        osc1.stop(now + 0.15);
+        osc2.start(now + 0.18);
+        osc2.stop(now + 0.35);
+        break;
+      }
+      case 'success': {
+        // Ascending major arpeggio
+        const notes = [523, 659, 784, 1047]; // C5, E5, G5, C6
+        notes.forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const g = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + i * 0.15);
+          g.gain.setValueAtTime(0.12, now + i * 0.15);
+          g.gain.linearRampToValueAtTime(0, now + i * 0.15 + 0.4);
+          osc.connect(g);
+          g.connect(ctx.destination);
+          osc.start(now + i * 0.15);
+          osc.stop(now + i * 0.15 + 0.4);
+        });
+        break;
+      }
+      case 'pop': {
+        // Short pop sound
+        const osc = ctx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(800, now);
+        osc.frequency.exponentialRampToValueAtTime(300, now + 0.1);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+        osc.connect(gain);
+        osc.start(now);
+        osc.stop(now + 0.15);
+        break;
+      }
+    }
+  }
+
+  // Animal data
+  const animals = [
+    { id: 'cow', emoji: '🐄', label: 'Cow', question: '?' },
+    { id: 'duck', emoji: '🦆', label: 'Duck', question: '?' },
+    { id: 'sheep', emoji: '🐑', label: 'Sheep', question: '?' },
+    { id: 'pig', emoji: '🐷', label: 'Pig', question: '?' },
+    { id: 'chicken', emoji: '🐔', label: 'Chicken', question: '?' },
+    { id: 'dog', emoji: '🐶', label: 'Dog', question: '?' },
+  ];
+
+  let foundCount = 0;
+  let bubbleElements = [];
+
+  function getRandomPositions() {
+    const positions = [];
+    const margin = 55;
+    const minY = 100;
+    const maxY = window.innerHeight * 0.55;
+    const minX = margin;
+    const maxX = window.innerWidth - margin;
+
+    // Grid-based placement to avoid overlaps
+    const cols = 3;
+    const rows = 2;
+    const cellW = (maxX - minX) / cols;
+    const cellH = (maxY - minY) / rows;
+
+    const indices = [];
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        indices.push({ r, c });
+      }
+    }
+    // Shuffle
+    for (let i = indices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [indices[i], indices[j]] = [indices[j], indices[i]];
+    }
+
+    for (let i = 0; i < 6; i++) {
+      const { r, c } = indices[i];
+      const x = minX + c * cellW + Math.random() * (cellW - 90);
+      const y = minY + r * cellH + Math.random() * (cellH - 90);
+      positions.push({ x, y });
+    }
+    return positions;
+  }
+
+  function createSparkles(x, y, color) {
+    const colors = ['#FFD700', '#FF69B4', '#00CED1', '#FF6347', '#9370DB'];
+    for (let i = 0; i < 8; i++) {
+      const sparkle = document.createElement('div');
+      sparkle.className = 'sparkle';
+      const angle = (i / 8) * Math.PI * 2;
+      const dist = 30 + Math.random() * 20;
+      sparkle.style.left = (x + Math.cos(angle) * dist) + 'px';
+      sparkle.style.top = (y + Math.sin(angle) * dist) + 'px';
+      sparkle.style.background = colors[Math.floor(Math.random() * colors.length)];
+      sparkle.style.width = (6 + Math.random() * 6) + 'px';
+      sparkle.style.height = sparkle.style.width;
+      document.getElementById('scene').appendChild(sparkle);
+      setTimeout(() => sparkle.remove(), 600);
+    }
+  }
+
+  function createConfetti() {
+    const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F'];
+    for (let i = 0; i < 50; i++) {
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      piece.style.left = Math.random() * 100 + 'vw';
+      piece.style.top = '-20px';
+      piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.animationDuration = (2 + Math.random() * 2) + 's';
+      piece.style.animationDelay = Math.random() * 1.5 + 's';
+      piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      piece.style.width = (8 + Math.random() * 8) + 'px';
+      piece.style.height = (8 + Math.random() * 8) + 'px';
+      document.body.appendChild(piece);
+      setTimeout(() => piece.remove(), 5000);
+    }
+  }
+
+  function updateProgress() {
+    const paws = document.querySelectorAll('.paw');
+    for (let i = 0; i < foundCount; i++) {
+      paws[i].classList.add('found');
+    }
+  }
+
+  function checkAllFound() {
+    if (foundCount === 6) {
+      setTimeout(() => {
+        playSound('success');
+        createConfetti();
+        document.getElementById('celebration').classList.add('active');
+      }, 800);
+    }
+  }
+
+  function handleBubbleTap(bubble, animal) {
+    if (bubble.classList.contains('popped') || bubble.classList.contains('popping')) return;
+
+    // Get center of bubble for sparkles
+    const rect = bubble.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+
+    playSound('pop');
+    bubble.classList.add('popping');
+    createSparkles(cx, cy);
+
+    setTimeout(() => {
+      bubble.classList.remove('popping');
+      bubble.classList.add('popped');
+      playSound(animal.id);
+      foundCount++;
+      updateProgress();
+      checkAllFound();
+    }, 400);
+  }
+
+  function createBubbles() {
+    // Remove old bubbles
+    bubbleElements.forEach(b => b.remove());
+    bubbleElements = [];
+
+    const positions = getRandomPositions();
+    const shuffled = [...animals].sort(() => Math.random() - 0.5);
+
+    shuffled.forEach((animal, i) => {
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble floating';
+      bubble.dataset.animal = animal.id;
+      bubble.style.left = positions[i].x + 'px';
+      bubble.style.top = positions[i].y + 'px';
+      // Stagger float animation
+      bubble.style.animationDelay = (Math.random() * 2) + 's';
+      bubble.style.animationDuration = (2.5 + Math.random() * 1.5) + 's';
+
+      bubble.innerHTML = `
+        <div class="bubble-outer">
+          <div class="bubble-inner">?</div>
+        </div>
+        <span class="emoji">${animal.emoji}</span>
+        <span class="animal-label">${animal.label}</span>
+      `;
+
+      bubble.addEventListener('click', () => handleBubbleTap(bubble, animal));
+
+      document.getElementById('scene').appendChild(bubble);
+      bubbleElements.push(bubble);
+    });
+  }
+
+  function createFencePosts() {
+    const fence = document.getElementById('fence');
+    const postCount = Math.ceil(window.innerWidth / 60);
+    // Remove old posts (keep rails)
+    fence.querySelectorAll('.fence-post').forEach(p => p.remove());
+    for (let i = 0; i < postCount; i++) {
+      const post = document.createElement('div');
+      post.className = 'fence-post';
+      post.style.left = (i * 60 + 10) + 'px';
+      fence.appendChild(post);
+    }
+  }
+
+  function resetGame() {
+    foundCount = 0;
+    document.querySelectorAll('.paw').forEach(p => p.classList.remove('found'));
+    document.getElementById('celebration').classList.remove('active');
+    createBubbles();
+  }
+
+  // Init
+  createFencePosts();
+  createBubbles();
+
+  document.getElementById('playAgain').addEventListener('click', () => {
+    playSound('pop');
+    resetGame();
+  });
+
+  // Handle resize
+  window.addEventListener('resize', () => {
+    createFencePosts();
+    if (foundCount === 0) createBubbles();
+  });
+</script>
+
+</body>
+</html>
